@@ -9,9 +9,11 @@
 
 <body>
 
-<title>HI!</title>
 
-<h1>GOOD TO SEE YOU</h1>
+
+<h1>HI</h1>
+<h2>good to see you</h2>
+
 
 <p>my name is jeo </p>
 
