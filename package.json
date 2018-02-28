@@ -1,0 +1,22 @@
+{
+  "name": "jeoman",
+  "version": "1.0.0",
+  "description": "<!DOCTYPE html>\r <html>",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.16.2",
+    "jade": "^1.11.0",
+    "orientjs": "^2.2.8",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://www.github.com/jeoman/jeoman"
+  },
+  "author": "",
+  "license": "ISC"
+}
