@@ -8,7 +8,7 @@ app.use(session({
     secret : '129j0219jfh',
     resave : false,
     saveUninitialized : true,
-    store : new FileStore()
+    store : new FileStore({path: './sessions/'})
 }));
 
 app.get('/count', function(req,res){
@@ -41,8 +41,9 @@ app.post('/auth/login', function(req,res){
     var pwd = req.body.password;
     if(uname === user.username && pwd === user.password){
         req.session.displayName = user.displayName;
-        res.redirect('/welcome');
-    } else {
+        req.session.save(function(){
+            res.redirect('/welcome');}
+        )} else {
         res.send('Who are you? <a href="/auth/login">login</a>');
     };
 });
@@ -64,8 +65,10 @@ app.get('/welcome', function(req,res){
 
 app.get('/auth/logout', function(req,res){
     delete req.session.displayName
-    res.redirect('/welcome');
-})
+    req.session.save(function(){
+        res.redirect('/welcome');
+    });
+});
 app.listen(3003, function(){
     console.log('Connected 3003 port!!');
 });
