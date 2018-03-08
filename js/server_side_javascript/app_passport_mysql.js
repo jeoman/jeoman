@@ -1,19 +1,33 @@
 var express = require('express');
 var session = require('express-session');
-var FileStore = require('session-file-store')(session);
+var MySQLStore = require('express-mysql-session')(session);
 var bodyParser = require('body-parser');
 var bkfd2Password = require("pbkdf2-password");
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+var FacebookStrategy = require('passport-facebook').Strategy;
 var hasher = bkfd2Password();
-
+var mysql      = require('mysql');
+var conn = mysql.createConnection({
+  host     : 'localhost',
+  user     : 'root',
+  password : '920326',
+  database : 'o2'
+});
+conn.connect();
 var app = express();
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(session({
     secret : '129j0219jfh',
     resave : false,
     saveUninitialized : true,
-    store : new FileStore()
+    store : new MySQLStore({
+        host: 'localhost',
+        port: 3306,
+        user: 'root',
+        password: '920326',
+        database: 'o2'
+    })
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -56,46 +70,53 @@ passport.serializeUser(function(user, done) {
   });
   
 passport.deserializeUser(function(id, done) {
-    for(var i =0; i<users.length;i++){
-        var user = users[i];
-        if(user.authId === id){
-            return  done(null, user);
-        }
-    }
+    var sql = 'SELECT * FROM users WHERE authId=?';
+    conn.query(sql, [id], function(err, results){
+        console.log(sql, err, results);
+    })
+    // for(var i =0; i<users.length;i++){
+    //     var user = users[i];
+    //     if(user.authId === id){
+    //         return  done(null, user);
+    //     }
+    // }
+    // done('There is no user.')
 });
  
 passport.use(new LocalStrategy(
     function(username, password, done){
         var uname = username;
         var pwd = password;
-        for(var i =0; i<users.length;i++){
-            var user = users[i];
-            if(uname === user.username) {
-                return hasher({password :pwd, salt :user.salt}, function(err,pass,salt,hash){
+        var sql = 'SELECT * FROM users WHERE authId=?';
+        conn.query(sql, ['local:'+uname], function(err, results){
+            if(err){
+                return done('There is no user.');
+            } 
+            var user = results[0];
+            return hasher({password :pwd, salt :user.salt}, function(err,pass,
+            salt,hash){
                 if(hash === user.password){
-                     return done(null, user);
-                    
+                    return done(null, user);
                 } else {
                     return done(null, false);
                 }
             });
-            }
-        };
-        done(null,false);
+        });
     }
 ));
 
+
+
+
 app.post('/auth/login',
     passport.authenticate('local', { 
-        // successRedirect: '/welcome',
+        successRedirect: '/welcome',
         failureRedirect: '/auth/login',
         failureFlash: false
-    }),
-        function(req,res){
-    req.session.save(function(){
-        res.redirect('/welcome');
-    });
-});
+    })
+);
+
+
 
 // app.post('/auth/login', function(req,res){
 //     var uname = req.body.username;
@@ -115,6 +136,7 @@ app.post('/auth/login',
 //             });
 //         }
 // };
+    
 // });
         // if(uname === user.username && sha256(pwd+user.salt) === user.password){
         //     req.session.displayName = user.displayName;
@@ -122,6 +144,8 @@ app.post('/auth/login',
         //         res.redirect('/welcome');
         //     });
         // } 
+
+
 
 app.get('/welcome', function(req,res){
     if(req.user && req.user.displayName){
@@ -161,20 +185,30 @@ app.post('/auth/register', function(req, res){
             salt : salt,
             displayName : req.body.displayName
         };
-    users.push(user);
-    req.login(user, function(err){
-        req.session.save(function(){
-            res.redirect('/welcome');
-    });
+        var sql = 'INSERT INTO users SET ?';
+        conn.query(sql, user, function(err, results){
+            if(err){
+                console.log(err);
+                res.status(500);
+            } else {
+                res.redirect('/welcome')
+            }
+        });
+    // users.push(user);
+    // req.login(user, function(err){
+    //     req.session.save(function(){
+    //         res.redirect('/welcome');
+    // });
+    //});
 });
 });
-});
-app.get('/auth/logout', function(req,res){
+app.get('/auth/logout', function(){
     req.logout();
     req.session.save(function(){
         res.redirect('/welcome');
     })
 })
+
 app.listen(3003, function(){
     console.log('Connected 3003 port!!');
 });
