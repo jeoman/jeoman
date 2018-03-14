@@ -1,0 +1,11 @@
+extends ../layout
+block content
+  h1 Register
+  form(action='/auth/register', method='post')
+    p
+      input(type='text', name='username', placeholder='username')
+    p
+      input(type='text', name='password', placeholder='password')
+    p
+      input(type='submit')
+
