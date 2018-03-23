@@ -1,0 +1,26 @@
+extends layout
+block content
+    h1 #{title}
+    form(method='post' action='/board/write' onsubmit='noWriteSubmit()')
+        table(border='2')
+            tr  
+                th Title
+                td
+                    input(type='text' name='title' id='title' required)
+            tr  
+                th Writer
+                td
+                    input(type='text' name='name' id='name' required)
+            tr  
+                th password
+                td
+                    input(type='text' name='password' id='password' required)
+            tr  
+                th Content
+                td
+                    textarea(cols='50' role='12' name='content' id='content' required)
+            tr
+                td(colspan='2')
+                    input(type='submit' value='Submit')
+            
+                

@@ -1,0 +1,10 @@
+extends layout
+block content
+    h1 #{title}
+    form(action='/login' method='post')
+        p
+            input(type='text' name='username' placeholder = 'Name')
+        p
+            input(type='password' name='password' placeholder = 'Password')
+        p
+            input(type='submit')

@@ -1,0 +1,27 @@
+extends layout
+block content
+    h1 #{title}
+    br
+    br
+    table(border='1')
+        tr
+            td No
+            td Title
+            td Writer
+            td Hit
+            td Create
+        ul
+            -for(var i=0;i<rows.length; i++)
+                tr
+                    td #{rows[i].id}
+                    td 
+                        a(href='/board/read/'+rows[i].id) #{rows[i].title}
+                    td #{rows[i].name}
+                    td #{rows[i].hit}
+                    td #{rows[i].moddate}
+    br
+    a(href='/board/write') Write
+
+
+   
+        

@@ -45,6 +45,7 @@ module.exports = function(){
                 res.status(500).send('Internal Server Error');
             }
         });
+    
     });
     
     route.post(['/:id/edit'], function(req,res){

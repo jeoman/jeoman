@@ -1,0 +1,27 @@
+extends layout
+block content
+    h1 #{title}
+    form(method="post" action='/board/edit/'+rows.id)
+        table(border='2')
+            tr  
+                th Title
+                td
+                    input(type='text' name='title' value= rows.title)
+            tr  
+                th Writer
+                td
+                    input(type='text' name='name' value= rows.name)
+            tr  
+                th password
+                td
+                    input(type='text' name='password' value= rows.password)
+            tr  
+                th Content
+                td
+                    textarea(cols='50' role='12' name='content')
+                        =rows.content
+            tr
+                td(colspan='2')
+                    input(type='submit' value='Submit')
+            
+                
