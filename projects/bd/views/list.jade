@@ -1,6 +1,7 @@
 extends layout
 block content
-    h1 #{title}
+    h1 
+        a(href='/board/list/1') #{title}
     br
     br
     table(border='1')
@@ -11,14 +12,21 @@ block content
             td Hit
             td Create
         ul
-            -for(var i=0;i<rows.length; i++)
-                tr
-                    td #{rows[i].id}
-                    td 
-                        a(href='/board/read/'+rows[i].id) #{rows[i].title}
-                    td #{rows[i].name}
-                    td #{rows[i].hit}
-                    td #{rows[i].moddate}
+            -for(var i=(page*page_num)-page_num; i<(page*page_num); i++)
+                if i >leng
+                    - i++;
+                else
+                    tr
+                        td #{rows[i].id}
+                        td 
+                            a(href='/board/read/'+rows[i].id) #{rows[i].title}
+                        td #{rows[i].name}
+                        td #{rows[i].hit}
+                        td #{rows[i].moddate}
+            tr
+                td(colspan='5')
+                    -for(var j=0; j<rows.length/10;j++)
+                        a(href='/board/list/#{j+1}')=j+1
     br
     a(href='/board/write') Write
 

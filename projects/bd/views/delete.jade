@@ -1,0 +1,7 @@
+extends layout
+block content
+    h1 #{title}  #{row.title} ?
+    form(action='/board/delete/'+row.id method='post')
+        p
+            input(type ='submit' value ='YES')
+    a(href='/board/read/'+row.id) NO
