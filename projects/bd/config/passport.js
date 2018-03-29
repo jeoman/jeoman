@@ -3,6 +3,7 @@ module.exports = function(app){
     var pool = require('./db')();
     var passport = require('passport');
     var LocalStrategy = require('passport-local').Strategy;
+    var FacebookStrategy = require('passport-facebook').Strategy;
     var bkfd2Password = require('pbkdf2-password');
     var hasher = bkfd2Password();
     app.use(passport.initialize());
@@ -57,5 +58,24 @@ module.exports = function(app){
         })
        }));
        
+    passport.use(new FacebookStrategy({
+    clientID : '1648296715230547',
+    clientSecret : 'e1c88ec7b215f9e7d3641dde96bdff4c',
+    callbackURL : '/facebook/callback',
+    passReqToCallback : true,}, 
+    (req, accessToken, refreshToken, profile, done)=>{
+    User.findOne({id:profile.id}, (err, user)=>{
+        if(user){
+            return done(err,user);
+        } // 회원 정보가 있으면 로그인
+        var newUser = new User({ //없으면 회원생성
+            id : profile.id
+        });
+        newUser.save((user)=>{
+            return done(null, user); // 새로운 회원 생성 후 로그인
+        })
+    })
+    }))
+
        return passport;
 }

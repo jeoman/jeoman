@@ -4,7 +4,7 @@ module.exports = function(passport){
     var conn = require('../config/db')();
     var route = require('express').Router();
 
-    route.get('', function(req,res){
+    route.get('/', function(req,res){
         res.render('index', {
             title : 'Welcome to Daily'
         });
@@ -66,8 +66,18 @@ module.exports = function(passport){
         })
     });
 
-
-
+    route.get('/facebook', 
+        passport.authenticate('facebook', {
+            authType : 'rerequest', 
+            scope: ['public_profile', 'email']
+        }
+    ));
+    route.get('/facebook/callback', 
+        passport.authenticate('facebook', {
+            successRedirect:'/home',
+            failureRedirect: '/'
+        }
+    ));
 
 
     route.get('/logout', function(req, res){
