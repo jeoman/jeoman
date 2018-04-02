@@ -7,12 +7,12 @@ class Codelab extends React.Component{
   }
   
   
-  class App extends React.Component{
-    render(){
-      return(
-        <Codelab/>
-      );
-    }
-  }
-  
-  ReactDOM.render(<App/>,document.getElemantById('root'));
+class App extends React.Component{
+render(){
+    return(
+    <Codelab/>
+    );
+}
+}
+
+ReactDOM.render(<App/>,document.getElementById('root'));
